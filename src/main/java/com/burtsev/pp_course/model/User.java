@@ -1,7 +1,6 @@
 package com.burtsev.pp_course.model;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -23,25 +22,27 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String username;
 
+
+    @Size(min = 2, max = 20, message = "Password to short (2) or long (30)")
     private String password;
     @Column(unique = true)
-//    @Email
+    @Email
     private String email;
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String firstName;
 
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String lastName;
 
-//    @Min(value = 0, message = "Age must be greater than 0" )
+    @Min(value = 0, message = "Age must be greater than 0" )
     private int age;
 
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String country;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

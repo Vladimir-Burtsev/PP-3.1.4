@@ -6,7 +6,7 @@
     <title>Edit user</title>
 </head>
 <body>
-<form th:method="PATCH" th:action="@{/users/{id}(id=${user.getId()})}" th:object="${user}">
+<form th:method="PATCH" th:action="@{/admin/user/{id}(id=${user.getId()})}" th:object="${user}">
   <label for="firstName" > Enter firstName:</label>
   <input type="text" th:field="*{firstName}" id="firstName">
   <div style="color: darkolivegreen" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">First Name error</div>
@@ -23,7 +23,15 @@
   <input type="text" th:field="*{country}" id="country">
   <div style="color: darkolivegreen" th:if="${#fields.hasErrors('country')}" th:errors="*{country}">Country error</div>
   <br/>
-  <input type="submit" value="Edit :)">
+  <label for="username" > Enter username:</label>
+  <input type="text" th:field="*{username}" id="username">
+  <div style="color: darkolivegreen" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</div>
+  <br/>
+  <label for="password" > Enter password:</label>
+  <input type="password" th:field="*{password}" id="password">
+  <div style="color: darkolivegreen" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
+  <br/>
+  <input type="submit" value="Edit">
 </form>
 </body>
 </html>

@@ -12,6 +12,11 @@
     <p th:text="${user.getAge()}">VALUE</p>
     <p th:text="${user.getCountry()}">VALUE</p>
 
+    <a th:href="@{/admin/user/{id}/edit(id=${user.getId()})}">Edit</a>
+
+    <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}">
+        <input type="submit" value="Delete">
+    </form>
     <form th:method="POST" th:action="@{/logout}">
         <input type="submit" value="Logout">
     </form>

@@ -1,6 +1,7 @@
 package com.burtsev.pp_course.controller;
 
 import com.burtsev.pp_course.model.User;
+import com.burtsev.pp_course.service.RoleService;
 import com.burtsev.pp_course.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,55 +12,59 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/users")
-public class UsersController {
+@RequestMapping("/admin")
+public class AdminController {
     private final UserService usersService;
+    private final RoleService roleService;
+
 
     @Autowired
-    public UsersController(UserService usersService) {
+    public AdminController(UserService usersService, RoleService roleService) {
         this.usersService = usersService;
+        this.roleService = roleService;
     }
 
     @GetMapping()
     public String showAllUsers(Model model){
         model.addAttribute("users", usersService.getAllUsers());
-        return "users/show_all_users";
-    }
-    @GetMapping("{id}")
-    public String showUser(@PathVariable("id") int id, Model model){
-        model.addAttribute("user", usersService.getUser(id));
-        return "users/show_user";
+        return "admin/show_all_users";
     }
     @GetMapping("/new")
     public String newUser(Model model){
         model.addAttribute("user", new User());
-        return "users/new";
+        model.addAttribute("roles", roleService.getAll());
+        return "admin/new";
+    }
+    @GetMapping("/user/{id}")
+    public String showUser(@PathVariable("id") int id, Model model){
+        model.addAttribute("user", usersService.getUser(id));
+        return "admin/show_user";
     }
     @PostMapping
     public String createUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return "users/new";
+            return "admin/new";
 
         usersService.save(user);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
-    @GetMapping("/{id}/edit")
+    @GetMapping("/user/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id){
         model.addAttribute("user", usersService.getUser(id));
-        return "users/edit";
+        return "admin/edit";
     }
-    @PatchMapping("/{id}")
+    @PatchMapping("/user/{id}")
     public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult, @PathVariable("id") int id){
         if (bindingResult.hasErrors())
-            return "users/edit";
+            return "admin/edit";
 
         usersService.update(user);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/user/{id}")
     public String delete(@PathVariable("id") int id){
         usersService.delete(id);
-        return "redirect:/users";
+        return "redirect:/admin";
     }
 }

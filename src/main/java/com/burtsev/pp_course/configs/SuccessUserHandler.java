@@ -1,5 +1,6 @@
 package com.burtsev.pp_course.configs;
 
+import com.burtsev.pp_course.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,11 +20,12 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
-        if (roles.contains("ROLE_USER")) {
-            httpServletResponse.sendRedirect("/user");
-        }
-        else if (roles.contains("ROLE_ADMIN")){
+        if (roles.contains("ROLE_ADMIN")){
             httpServletResponse.sendRedirect("/admin");
+        }
+        else if (roles.contains("ROLE_USER")) {
+            int userId = ((User)authentication.getPrincipal()).getId();
+            httpServletResponse.sendRedirect("/user/" + userId);
         }
         else {
             httpServletResponse.sendRedirect("/");

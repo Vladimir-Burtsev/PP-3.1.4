@@ -4,6 +4,7 @@ import com.burtsev.pp_course.model.Role;
 import com.burtsev.pp_course.model.User;
 import com.burtsev.pp_course.repositories.RoleRepository;
 import com.burtsev.pp_course.repositories.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -31,16 +32,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    public void initFirstAdminRole(){
+
+    }
 ////    @PostConstruct
 //    public void initDataUsers(){
-////        Role roleUser = new Role();
-////        roleUser.setRolename("ROLE_USER");
 ////        Role roleAdmin = new Role();
 ////        roleAdmin.setRolename("ROLE_ADMIN");
-////        roleRepository.save(roleUser);
 ////        roleRepository.save(roleAdmin);
 //
-//        Role userRole = roleRepository.findById(1).get();
 //        Role adminRole = roleRepository.findById(2).get();
 //        User user2 = new User();
 //            user2.setRoles(List.of(userRole));
@@ -60,13 +61,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 //    }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
 
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user.get();
+        User dbUser = user.get();
+        Hibernate.initialize(dbUser.getRoles());
+        return dbUser;
     }
     public User findUserById(int userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
@@ -110,6 +114,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void save(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Role userRole = roleRepository.findById(1).get();
         userRepository.save(user);
     }
 
