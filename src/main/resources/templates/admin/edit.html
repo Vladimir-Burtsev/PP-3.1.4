@@ -31,6 +31,11 @@
   <input type="password" th:field="*{password}" id="password">
   <div style="color: darkolivegreen" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
   <br/>
+  <label for="role"> Select role</label>
+  <select id="role" th:field="*{roles}" multiple>
+    <option th:each="role:${roles}" th:value="${{role}}" th:text="${role.rolename}"/>
+  </select>
+  <br/>
   <input type="submit" value="Edit">
 </form>
 </body>

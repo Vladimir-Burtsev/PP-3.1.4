@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @PostMapping
     public void update(User updatedUser) {
         updatedUser.setPassword(bCryptPasswordEncoder.encode(updatedUser.getPassword()));
-        Role userRole = roleRepository.findById(1).get();
+//        Role userRole = roleRepository.findById(1).get();
         userRepository.save(updatedUser);
     }
 
