@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.annotation.PostConstruct;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,19 +78,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
-//    public boolean saveUser(User user) {
-//        User userFromDB = userRepository.findByUsername(user.getUsername());
-//
-//        if (userFromDB != null) {
-//            return false;
-//        }
-//
-//        user.setRoles(Collections.singleton(new Role(1, "ROLE_USER")));
-//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        userRepository.save(user);
-//        return true;
-//    }
-
     public boolean deleteUser(int userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
@@ -115,15 +100,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Role userRole = roleRepository.findById(1).get();
+//        Role userRole = roleRepository.findById(1).get();
         userRepository.save(user);
     }
 
     @Transactional
-
     @Override
     @PostMapping
     public void update(User updatedUser) {
+        updatedUser.setPassword(bCryptPasswordEncoder.encode(updatedUser.getPassword()));
+        Role userRole = roleRepository.findById(1).get();
         userRepository.save(updatedUser);
     }
 
