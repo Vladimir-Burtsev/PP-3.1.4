@@ -1,17 +1,18 @@
 package com.burtsev.pp_course.service;
 
-import com.burtsev.pp_course.model.Role;
 import com.burtsev.pp_course.model.User;
 import com.burtsev.pp_course.repositories.RoleRepository;
 import com.burtsev.pp_course.repositories.UserRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -27,48 +28,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
-
-    public void initFirstAdminRole(){
-
-    }
-////    @PostConstruct
-//    public void initDataUsers(){
-////        Role roleAdmin = new Role();
-////        roleAdmin.setRolename("ROLE_ADMIN");
-////        roleRepository.save(roleAdmin);
-//
-//        Role adminRole = roleRepository.findById(2).get();
-//        User user2 = new User();
-//            user2.setRoles(List.of(userRole));
-//            user2.setUsername("user2");
-//            user2.setPassword(bCryptPasswordEncoder.encode("100"));
-//            userRepository.save(user2);
-//        User admin1 = new User();
-//            admin1.setRoles(List.of(adminRole));
-//            admin1.setUsername("admin1");
-//            admin1.setPassword(bCryptPasswordEncoder.encode("100"));
-//            userRepository.save(admin1);
-//        User admin2 = new User();
-//            admin2.setRoles(List.of(adminRole));
-//            admin2.setUsername("admin2");
-//            admin2.setPassword(bCryptPasswordEncoder.encode("100"));
-//            userRepository.save(admin2);
-//    }
-
+    
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
 
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        User dbUser = user.get();
-        Hibernate.initialize(dbUser.getRoles());
-        return dbUser;
+        return user.get();
     }
     public User findUserById(int userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
@@ -100,16 +74,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-//        Role userRole = roleRepository.findById(1).get();
         userRepository.save(user);
     }
 
     @Transactional
     @Override
-    @PostMapping
+    @PatchMapping
     public void update(User updatedUser) {
         updatedUser.setPassword(bCryptPasswordEncoder.encode(updatedUser.getPassword()));
-//        Role userRole = roleRepository.findById(1).get();
         userRepository.save(updatedUser);
     }
 

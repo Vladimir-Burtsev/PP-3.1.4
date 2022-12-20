@@ -5,10 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Table(name = "users")
 @Entity
@@ -16,29 +13,28 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(unique = true)
     private String username;
 
-
-//    @Size(min = 2, max = 20, message = "Password to short (2) or long (30)")
     @NotNull
     private String password;
-//    @Column(unique = true)
-//    @Email
+    @Column(unique = true)
+    @Email
     private String email;
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String firstName;
 
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String lastName;
 
-//    @Min(value = 0, message = "Age must be greater than 0" )
+    @Min(value = 0, message = "Age must be greater than 0" )
     private int age;
 
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String country;
     @ManyToMany(fetch = FetchType.LAZY)
     @NotNull
@@ -46,13 +42,13 @@ public class User implements UserDetails {
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
     //constructor not password.
-    public User(String username, String email, String firstName, String lastName, int age, String country, List<Role> roles) {
+    public User(String username, String email, String firstName, String lastName, int age, String country, Set<Role> roles) {
         this.username = username;
         this.email = email;
         this.firstName = firstName;
@@ -88,10 +84,10 @@ public class User implements UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
     public String getFirstName() {
