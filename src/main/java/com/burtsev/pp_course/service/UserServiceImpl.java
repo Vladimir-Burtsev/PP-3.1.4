@@ -4,6 +4,7 @@ import com.burtsev.pp_course.model.User;
 import com.burtsev.pp_course.repositories.RoleRepository;
 import com.burtsev.pp_course.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,21 +33,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByUsername(email);
 
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
         return user.get();
     }
+    @Override
+    public User getCurrentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
     public User findUserById(int userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new User());
     }
-    public List<User> allUsers() {
-        return userRepository.findAll();
-    }
+//    public List<User> allUsers() {
+//        return userRepository.findAll();
+//    }
 
     public boolean deleteUser(int userId) {
         if (userRepository.findById(userId).isPresent()) {

@@ -14,28 +14,24 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(unique = true)
-    private String username;
 
     @NotNull
     private String password;
     @Column(unique = true)
     @Email
+    @NotNull
     private String email;
-    @NotEmpty(message = "The field cannot be empty")
-    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+//    @NotEmpty(message = "The field cannot be empty")
+//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String firstName;
 
-    @NotEmpty(message = "The field cannot be empty")
-    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+//    @NotEmpty(message = "The field cannot be empty")
+//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String lastName;
 
-    @Min(value = 0, message = "Age must be greater than 0" )
+//    @Min(value = 0, message = "Age must be greater than 0" )
     private int age;
 
-    @NotEmpty(message = "The field cannot be empty")
-    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
-    private String country;
     @ManyToMany(fetch = FetchType.LAZY)
     @NotNull
     @JoinTable(
@@ -48,13 +44,13 @@ public class User implements UserDetails {
     }
 
     //constructor not password.
-    public User(String username, String email, String firstName, String lastName, int age, String country, Set<Role> roles) {
-        this.username = username;
+    public User(String email, String firstName, String lastName, int age, Set<Role> roles) {
+
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
-        this.country = country;
+
         this.roles = roles;
     }
 
@@ -66,10 +62,7 @@ public class User implements UserDetails {
     }
     @Override
     public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
+        return email;
     }
     @Override
     public String getPassword() {
@@ -90,6 +83,10 @@ public class User implements UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+    public String getRolesToString() {
+        String s = getRoles().toString().replaceAll("^\\[|\\]$", "");
+        return s.replace("ROLE_", "");
+    }
     public String getFirstName() {
         return firstName;
     }
@@ -107,12 +104,6 @@ public class User implements UserDetails {
     }
     public void setAge(int age) {
         this.age = age;
-    }
-    public String getCountry() {
-        return country;
-    }
-    public void setCountry(String country) {
-        this.country = country;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -136,28 +127,28 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id && age == user.age && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(country, user.country) && Objects.equals(roles, user.roles);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, email, firstName, lastName, age, country, roles);
-    }
-
-    @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "id=" + id +
+                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", country='" + country + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && age == user.age && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, password, email, firstName, lastName, age, roles);
     }
 }
