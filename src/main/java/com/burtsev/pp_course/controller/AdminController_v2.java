@@ -31,17 +31,12 @@ public class AdminController_v2 {
         model.addAttribute("roles", roleService.getAll());
         model.addAttribute("userCurrent", usersService.getCurrentUser());
 
-        return "admin_v2/admin_view";
+        return "admin/admin_view";
     }
-//    @GetMapping("/user/{id}")
-//    public String showUser(@PathVariable("id") int id, Model model){
-//        model.addAttribute("user", usersService.getUser(id));
-//        return "admin_v2/show_user";
-//    }
     @PostMapping
     public String createUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return "admin_v2/admin_view";
+            return "admin/admin_view";
 
         usersService.save(user);
         return "redirect:/admin";
@@ -50,7 +45,7 @@ public class AdminController_v2 {
     public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult, @PathVariable("id") int id){
         if (bindingResult.hasErrors())
-            return "admin_v2/admin_view";
+            return "admin/admin_view";
 
         usersService.update(user);
         System.out.println(user.getUsername());

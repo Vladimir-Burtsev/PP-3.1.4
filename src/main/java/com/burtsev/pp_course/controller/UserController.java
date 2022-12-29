@@ -15,20 +15,21 @@ import javax.security.sasl.AuthenticationException;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
+    private final UserService usersService;
 
     @Autowired
     public UserController(UserService userService) {
-        this.userService = userService;
+        this.usersService = userService;
     }
 
     @GetMapping("{id}")
     String getUser (@PathVariable("id") int id, Model model) throws AuthenticationException {
-        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (currentUser.getRoles().stream().allMatch(r-> r.getRolename().equals("ROLE_USER")) && !(currentUser.getId() == id)){
+        if (usersService.getCurrentUser().getRoles().stream().allMatch(r-> r.getRolename().equals("ROLE_USER")) &&
+                !(usersService.getCurrentUser().getId() == id)){
             throw new AuthenticationException();
         }
-        model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("user", usersService.getUser(id));
         return "/users/show_user";
     }
+
 }
