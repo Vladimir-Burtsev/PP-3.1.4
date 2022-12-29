@@ -33,17 +33,11 @@ public class AdminController_v2 {
 
         return "admin_v2/admin_view";
     }
-//    @GetMapping("/new")
-//    public String newUser(Model model){
-//        model.addAttribute("user", new User());
-//        model.addAttribute("roles", roleService.getAll());
-//        return "admin_v2/new";
+//    @GetMapping("/user/{id}")
+//    public String showUser(@PathVariable("id") int id, Model model){
+//        model.addAttribute("user", usersService.getUser(id));
+//        return "admin_v2/show_user";
 //    }
-    @GetMapping("/user/{id}")
-    public String showUser(@PathVariable("id") int id, Model model){
-        model.addAttribute("user", usersService.getUser(id));
-        return "admin_v2/show_user";
-    }
     @PostMapping
     public String createUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult){
         if (bindingResult.hasErrors())
@@ -52,13 +46,7 @@ public class AdminController_v2 {
         usersService.save(user);
         return "redirect:/admin";
     }
-//    @GetMapping("/user/{id}/edit")
-//    public String edit(Model model, @PathVariable("id") int id){
-//        model.addAttribute("user", usersService.getUser(id));
-//        model.addAttribute("roles", roleService.getAll());
-//        return "admin_v2/edit";
-//    }
-    @PatchMapping("/user/{id}")
+    @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult, @PathVariable("id") int id){
         if (bindingResult.hasErrors())
@@ -68,7 +56,7 @@ public class AdminController_v2 {
         System.out.println(user.getUsername());
         return "redirect:/admin";
     }
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id){
         usersService.delete(id);
         return "redirect:/admin";

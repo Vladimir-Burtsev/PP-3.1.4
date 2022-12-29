@@ -21,15 +21,15 @@ public class User implements UserDetails {
     @Email
     @NotNull
     private String email;
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String firstName;
 
-//    @NotEmpty(message = "The field cannot be empty")
-//    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
+    @NotEmpty(message = "The field cannot be empty")
+    @Size(min = 2, max = 20, message = "Name to short (2) or long (30)")
     private String lastName;
 
-//    @Min(value = 0, message = "Age must be greater than 0" )
+    @Min(value = 0, message = "Age must be greater than 0" )
     private int age;
 
     @ManyToMany(fetch = FetchType.LAZY)
